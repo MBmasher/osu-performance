@@ -114,17 +114,13 @@ void StandardScore::computeAimValue(const Beatmap& beatmap)
 		approachRateFactor += 0.45f * (approachRate - 10.33f);
 	else if (approachRate < 8.0f)
 	{
-		// HD is worth more with lower ar!
-		if ((_mods & EMods::Hidden) > 0)
-			approachRateFactor += 0.02f * (8.0f - approachRate);
-		else
-			approachRateFactor += 0.01f * (8.0f - approachRate);
+		approachRateFactor += 0.01f * (8.0f - approachRate);
 	}
 
 	_aimValue *= approachRateFactor;
 
 	if ((_mods & EMods::Hidden) > 0)
-		_aimValue *= 1.03f;
+		_aimValue *= 1.0f + 0.04f * (12.0f - approachRate);
 
 	if ((_mods & EMods::Flashlight) > 0)
 		// Apply length bonus again if flashlight is on simply because it becomes a lot harder on longer maps.
@@ -156,7 +152,7 @@ void StandardScore::computeSpeedValue(const Beatmap& beatmap)
 		_speedValue *= std::min(static_cast<f32>(pow(_maxCombo, 0.8f) / pow(maxCombo, 0.8f)), 1.0f);
 	
 	if ((_mods & EMods::Hidden) > 0)
-		_speedValue *= 1.18f;
+		_speedValue *= 1.0f + 0.04f * (12.0f - approachRate);
 
 	// Scale the speed value with accuracy _slightly_
 	_speedValue *= 0.5f + Accuracy() / 2.0f;
@@ -199,7 +195,7 @@ void StandardScore::computeAccValue(const Beatmap& beatmap)
 	_accValue *= std::min(1.15f, static_cast<f32>(pow(numHitObjectsWithAccuracy / 1000.0f, 0.3f)));
 
 	if ((_mods & EMods::Hidden) > 0)
-		_accValue *= 1.02f;
+		_accValue *= 1.08f;
 
 	if ((_mods & EMods::Flashlight) > 0)
 		_accValue *= 1.02f;
